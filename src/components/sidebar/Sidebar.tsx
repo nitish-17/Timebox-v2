@@ -39,7 +39,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           const color = eventEl.getAttribute('data-color') || 'rgba(11, 165, 233, 0.75)';
           return {
             title: eventEl.getAttribute('data-title'),
-            duration: '01:00',
+            duration: '00:30',
             backgroundColor: color,
             borderColor: color,
             extendedProps: {

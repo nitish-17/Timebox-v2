@@ -30,7 +30,7 @@ export const Notes: React.FC<NotesProps> = ({ date, note, updateNote }) => {
   return (
     <div className="notes-panel">
       <header className="notes-header">
-        <h2 className="notes-title">SYSTEM LOG</h2>
+        <h2 className="notes-title">NOTES</h2>
       </header>
       <div className="notes-content">
         <textarea

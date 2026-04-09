@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useMemo } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { format, isSameDay } from 'date-fns';
+import { format, isSameDay, addDays, subDays } from 'date-fns';
 import type { TimeBlock, Task } from '../../types';
 import { useDroppable } from '@dnd-kit/core';
 
@@ -157,7 +157,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
     >
       <header style={{ 
         flexShrink: 0,
-        height: '70px',
+        height: '50px',
         padding: '0 1.5rem', 
         borderBottom: '1px solid var(--border)', 
         display: 'flex', 
@@ -168,7 +168,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
         backdropFilter: 'blur(8px)'
       }}>
         <h2 style={{ 
-          fontSize: '1.1rem', 
+          fontSize: '1.0rem', 
           fontWeight: 600, 
           textTransform: 'uppercase',
           letterSpacing: '0.2em',
@@ -177,25 +177,91 @@ export const Schedule: React.FC<ScheduleProps> = ({
         }}>
           {format(new Date(selectedDate), 'EEEE, MMMM do')}
         </h2>
-        <input 
-          type="date" 
-          value={selectedDate} 
-          onChange={(e) => {
-            const target = e.target;
-            setDate(target.value);
-            setTimeout(() => target.blur(), 10);
-          }}
-          style={{ 
-            backgroundColor: 'rgba(15, 23, 42, 0.6)', 
-            padding: '0.4rem 0.6rem', 
-            borderRadius: '4px', 
-            fontSize: '0.8rem',
-            colorScheme: 'dark',
-            border: '1px solid var(--border)',
-            color: 'var(--text-primary)',
-            fontFamily: 'inherit'
-          }}
-        />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+          <button 
+            onClick={() => {
+              const prevDate = subDays(new Date(selectedDate), 1);
+              setDate(format(prevDate, 'yyyy-MM-dd'));
+            }}
+            aria-label="Previous day"
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--text-secondary)',
+              cursor: 'pointer',
+              padding: '0.3rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s',
+              borderRadius: '4px'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = 'var(--accent)';
+              e.currentTarget.style.backgroundColor = 'rgba(11, 165, 233, 0.1)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = 'var(--text-secondary)';
+              e.currentTarget.style.backgroundColor = 'transparent';
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          
+          <input 
+            type="date" 
+            value={selectedDate} 
+            onChange={(e) => {
+              const target = e.target;
+              setDate(target.value);
+              setTimeout(() => target.blur(), 10);
+            }}
+            style={{ 
+              backgroundColor: 'rgba(15, 23, 42, 0.6)', 
+              padding: '0.4rem 0.6rem', 
+              borderRadius: '4px', 
+              fontSize: '0.8rem',
+              colorScheme: 'dark',
+              border: '1px solid var(--border)',
+              color: 'var(--text-primary)',
+              fontFamily: 'inherit'
+            }}
+          />
+
+          <button 
+            onClick={() => {
+              const nextDate = addDays(new Date(selectedDate), 1);
+              setDate(format(nextDate, 'yyyy-MM-dd'));
+            }}
+            aria-label="Next day"
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--text-secondary)',
+              cursor: 'pointer',
+              padding: '0.3rem',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'all 0.2s',
+              borderRadius: '4px'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = 'var(--accent)';
+              e.currentTarget.style.backgroundColor = 'rgba(11, 165, 233, 0.1)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = 'var(--text-secondary)';
+              e.currentTarget.style.backgroundColor = 'transparent';
+            }}
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
       </header>
 
       <div className="calendar-wrapper" style={{ flex: 1 }}>
@@ -205,6 +271,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
           initialView="timeGridDay"
           headerToolbar={false}
           allDaySlot={false}
+          defaultTimedEventDuration="00:30"
           slotDuration="00:15:00"
           slotLabelInterval="01:00"
           slotLabelFormat={{

@@ -16,8 +16,11 @@ export const PlanModal: React.FC<PlanModalProps> = ({
   unfinishedTasks,
   unscheduledTasks,
 }) => {
-  const [scope, setScope] = useState<'unscheduled' | 'all'>(unscheduledTasks.length > 0 ? 'unscheduled' : 'all');
-  const targetTasks = scope === 'unscheduled' ? unscheduledTasks : unfinishedTasks;
+  const [scope, setScope] = useState<"unscheduled" | "all">(
+    unscheduledTasks.length > 0 ? "unscheduled" : "all",
+  );
+  const targetTasks =
+    scope === "unscheduled" ? unscheduledTasks : unfinishedTasks;
   const unfinishedTasksCount = targetTasks.length;
 
   const [startTime, setStartTime] = useState(() => {
@@ -29,7 +32,7 @@ export const PlanModal: React.FC<PlanModalProps> = ({
     const mm = String(now.getMinutes()).padStart(2, "0");
     return `${hh}:${mm}`;
   });
-  const [duration, setDuration] = useState(60);
+  const [duration, setDuration] = useState(30);
   const [breakGap, setBreakGap] = useState(15);
 
   const [content, setContent] = useState("");
@@ -43,12 +46,12 @@ export const PlanModal: React.FC<PlanModalProps> = ({
     }
 
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         onClose();
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [isReviewMode, onClose]);
 
   const handleGenerate = () => {
@@ -83,7 +86,10 @@ export const PlanModal: React.FC<PlanModalProps> = ({
     const timeRanges = parseTimeRanges(content);
 
     if (timeRanges.length > 0) {
-      onSuccess(timeRanges, targetTasks.map(t => t.id));
+      onSuccess(
+        timeRanges,
+        targetTasks.map((t) => t.id),
+      );
       onClose();
     } else {
       alert('No valid time ranges found. Expected format: "- HH:mm HH:mm"');
@@ -109,7 +115,7 @@ export const PlanModal: React.FC<PlanModalProps> = ({
           <div className="title-group">
             <Calendar size={18} className="title-icon" />
             <h2 className="modal-title h-glow">
-              {isReviewMode ? "Review Timeline" : "Strategic Planning"}
+              {isReviewMode ? "Review Timeline" : "Auto-schedule"}
             </h2>
           </div>
           <button onClick={onClose} className="close-btn">
@@ -121,21 +127,20 @@ export const PlanModal: React.FC<PlanModalProps> = ({
           {!isReviewMode ? (
             <div className="planning-params">
               <div className="scope-selector">
-                <button 
-                  className={`scope-btn ${scope === 'unscheduled' ? 'active' : ''}`}
-                  onClick={() => setScope('unscheduled')}
+                <button
+                  className={`scope-btn ${scope === "unscheduled" ? "active" : ""}`}
+                  onClick={() => setScope("unscheduled")}
                 >
                   Unscheduled ({unscheduledTasks.length})
                 </button>
-                <button 
-                  className={`scope-btn ${scope === 'all' ? 'active' : ''}`}
-                  onClick={() => setScope('all')}
+                <button
+                  className={`scope-btn ${scope === "all" ? "active" : ""}`}
+                  onClick={() => setScope("all")}
                 >
                   All ({unfinishedTasks.length})
                 </button>
               </div>
               <div className="param-grid">
-
                 <div className="param-item">
                   <label className="section-label">Start Time:</label>
                   <input

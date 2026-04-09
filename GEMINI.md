@@ -63,7 +63,3 @@ Timebox is a minimalist, local-first personal planning application designed for 
 - `/src/hooks`: Centralized business logic (state management, AI interaction, planning utilities).
 - `/src/db`: Database schema definitions and Dexie initialization.
 - `/src/types`: Global TypeScript interfaces defining the core domain entities (Task, TimeBlock, AppState).
-
-# Persona
-
-I need you to operate as our Lead System Architect. Your role involves observing and analyzing the website, carefully logging all feedback I provide. We will build this iteratively: please create detailed specification files in `specs-v2` folder only when I prompt you to do so. Let's proceed step-by-step.
