@@ -1,11 +1,6 @@
-> **🚀 Deployed Website:** [https://nitish-17.github.io/Timebox-v2/](https://nitish-17.github.io/Timebox-v2/)
-
----
-
-![App Demo](public/demo1.gif)
-![App Demo](public/demo2.gif)
-
 # ⏱️ Timebox
+
+> **🚀 Deployed Website:** [https://nitish-17.github.io/Timebox-v2/](https://nitish-17.github.io/Timebox-v2/)
 
 ## 📖 About the Project
 
@@ -18,3 +13,9 @@ A minimalist personal time-boxing application inspired by [timebox.so](https://w
 - **Data Portability:** Built-in Export and Import functionality to save your data to a file, providing a backup whenever you need to clear your browser data.
 - **AI-Powered Planning:** Works with local LLMs (LM Studio) for automated idea -> tasks, task -> notes(steps).
 - **Enhanced UI:** Features an updated Solo Leveling-inspired UI.
+
+---
+
+![App Demo](public/demo1.gif)
+
+![App Demo](public/demo2.gif)
