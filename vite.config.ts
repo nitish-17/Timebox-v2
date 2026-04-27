@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.svg", "hero.png"],
+      includeAssets: ["favicon.svg"],
       manifest: {
         name: "Timebox - Personal Planner",
         short_name: "Timebox",
