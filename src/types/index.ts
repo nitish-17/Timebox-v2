@@ -17,9 +17,19 @@ export interface TimeBlock {
   color?: string;
 }
 
+export type AIProvider = 'ollama' | 'lmstudio' | 'openai';
+
+export interface AISettings {
+  provider: AIProvider;
+  baseUrl: string;
+  model: string;
+  apiKey?: string;
+}
+
 export interface AppState {
   tasks: Task[];
   timeBlocks: TimeBlock[];
   notes: Record<string, string>; // date -> content
   selectedDate: string; // YYYY-MM-DD
+  aiSettings: AISettings;
 }

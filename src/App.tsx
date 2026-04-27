@@ -9,6 +9,7 @@ import { CommandPalette } from './components/CommandPalette';
 import { ExpandModal } from './components/ExpandModal';
 import { BriefModal } from './components/BriefModal';
 import { PlanModal } from './components/PlanModal';
+import { SettingsModal } from './components/SettingsModal';
 import { DndContext } from '@dnd-kit/core';
 import { useState, useCallback, useEffect } from 'react';
 import { calculateDuration } from './hooks/usePlanningUtils';
@@ -41,6 +42,7 @@ function App() {
   const [isExpandModalOpen, setIsExpandModalOpen] = useState(false);
   const [isBriefModalOpen, setIsBriefModalOpen] = useState(false);
   const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [selectedTaskForBrief, setSelectedTaskForBrief] = useState<Task | null>(null);
 
   const currentNote = notes[selectedDate] || '';
@@ -113,6 +115,14 @@ function App() {
         }
       }
 
+      if (e.key === ',' && !isSettingsOpen) {
+        if (!isTyping) {
+          e.preventDefault();
+          if (activeEl instanceof HTMLElement) activeEl.blur();
+          setIsSettingsOpen(true);
+        }
+      }
+
       if (!isTyping && !isCommandPaletteOpen) {
         if (e.key === 'n') {
           e.preventDefault();
@@ -136,6 +146,8 @@ function App() {
           setSelectedTaskForBrief(null);
         } else if (isPlanModalOpen) {
           setIsPlanModalOpen(false);
+        } else if (isSettingsOpen) {
+          setIsSettingsOpen(false);
         } else if (activeEl instanceof HTMLInputElement || activeEl instanceof HTMLTextAreaElement) {
           activeEl.blur();
         }
@@ -144,7 +156,7 @@ function App() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isCommandPaletteOpen, isExpandModalOpen, isBriefModalOpen, isPlanModalOpen, dismissAllMessages]);
+  }, [isCommandPaletteOpen, isExpandModalOpen, isBriefModalOpen, isPlanModalOpen, isSettingsOpen, dismissAllMessages]);
 
   return (
     <DndContext>
@@ -182,6 +194,12 @@ function App() {
             onSuccess={handlePlanSuccess}
             unfinishedTasks={unfinishedTasks}
             unscheduledTasks={unscheduledTasks}
+          />
+        )}
+
+        {isSettingsOpen && (
+          <SettingsModal
+            onClose={() => setIsSettingsOpen(false)}
           />
         )}
 

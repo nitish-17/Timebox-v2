@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { X, Sparkles, Check } from 'lucide-react';
-
-import { fetchTaskExpansionText } from "../hooks/useAI";
+import { useAI } from "../hooks/useAI";
 
 interface ExpandModalProps {
   onClose: () => void;
@@ -12,6 +11,7 @@ export const ExpandModal: React.FC<ExpandModalProps> = ({
   onClose,
   onSuccess,
 }) => {
+  const { fetchTaskExpansionText } = useAI();
   const [taskCount, setTaskCount] = useState(5);
 
   const getTemplate = (

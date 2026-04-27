@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, X, FileText, Check } from 'lucide-react';
-import { fetchTaskBriefing } from '../hooks/useAI';
+import { useAI } from '../hooks/useAI';
 
 interface BriefModalProps {
   onClose: () => void;
@@ -13,6 +13,7 @@ export const BriefModal: React.FC<BriefModalProps> = ({
   onSuccess,
   initialContent
 }) => {
+  const { fetchTaskBriefing } = useAI();
   const [taskCount, setTaskCount] = useState(5);
   
   const getTemplate = (count: number, task: string) => `### Task Decomposition Instructions

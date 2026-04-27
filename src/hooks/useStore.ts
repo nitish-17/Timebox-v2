@@ -2,7 +2,13 @@ import { useState, useCallback, useMemo } from 'react';
 import { useLiveQuery } from 'dexie-react-hooks';
 import { format } from 'date-fns';
 import { db } from '../db/db';
-import type { Task, TimeBlock } from '../types';
+import type { Task, TimeBlock, AISettings } from '../types';
+
+const DEFAULT_AI_SETTINGS: AISettings = {
+  provider: 'lmstudio',
+  baseUrl: 'http://localhost:1234/v1',
+  model: 'local-model',
+};
 
 export function useStore() {
   const [selectedDate, setSelectedDate] = useState(() => format(new Date(), 'yyyy-MM-dd'));
@@ -11,6 +17,18 @@ export function useStore() {
   const tasks = useLiveQuery(() => db.tasks.toArray(), []) || [];
   const timeBlocks = useLiveQuery(() => db.timeBlocks.toArray(), []) || [];
   const notesArray = useLiveQuery(() => db.notes.toArray(), []) || [];
+  const settingsArray = useLiveQuery(() => db.settings.toArray(), []) || [];
+
+  const aiSettings = useMemo(() => {
+    const aiSetting = settingsArray.find(s => s.key === 'aiConfig');
+    return (aiSetting?.value as AISettings) || DEFAULT_AI_SETTINGS;
+  }, [settingsArray]);
+
+  const updateAISettings = useCallback(async (updates: Partial<AISettings>) => {
+    const current = aiSettings;
+    const newValue = { ...current, ...updates };
+    await db.settings.put({ key: 'aiConfig', value: newValue });
+  }, [aiSettings]);
 
   // Convert notes array to record for backward compatibility
   const notes = useMemo(() => {
@@ -188,5 +206,7 @@ export function useStore() {
     scheduleTask,
     bulkScheduleTasks,
     unscheduleTask,
+    aiSettings,
+    updateAISettings,
   };
 }
