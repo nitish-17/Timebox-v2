@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { Draggable } from '@fullcalendar/interaction';
 import { Download, Upload } from 'lucide-react';
@@ -6,6 +6,7 @@ import { exportDB, importDB } from 'dexie-export-import';
 import { db } from '../../db/db';
 import type { Task, TimeBlock } from '../../types';
 import { TaskList } from './TaskList';
+import { ActivityHeatmap } from '../heatmap/ActivityHeatmap';
 
 interface SidebarProps {
   tasks: Task[];
@@ -17,6 +18,40 @@ interface SidebarProps {
   moveTaskToList: (id: string, list: 'today' | 'later') => void;
   selectedDate: string;
 }
+
+const EnergyBar: React.FC = () => {
+  const [energy, setEnergy] = useState(0);
+
+  useEffect(() => {
+    const calculateEnergy = () => {
+      const now = new Date();
+      const minutes = now.getHours() * 60 + now.getMinutes();
+      
+      let level = 0;
+      if (minutes >= 360) { // 6 AM to Midnight
+        // 6 AM (360) to 12 AM (1440) is 1080 minutes
+        level = 100 - ((minutes - 360) / 1080) * 100;
+      } else { // Midnight to 6 AM
+        // 12 AM (0) to 6 AM (360) is 360 minutes
+        level = (minutes / 360) * 100;
+      }
+      setEnergy(Math.max(0, Math.min(100, level)));
+    };
+
+    calculateEnergy();
+    const interval = setInterval(calculateEnergy, 60000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="energy-bar-container" style={{ flex: 1, marginRight: '1.5rem' }}>
+      <div 
+        className="energy-bar-fill" 
+        style={{ width: `${energy}%` }} 
+      />
+    </div>
+  );
+};
 
 export const Sidebar: React.FC<SidebarProps> = ({
   tasks,
@@ -110,7 +145,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       className={`sidebar ${isOver ? 'sidebar-droppable-active' : ''}`}
     >
       <div className="sidebar-header">
-        <h1 className="sidebar-title" style={{ flex: 1 }}>THE SYSTEM</h1>
+        <EnergyBar />
         <div style={{ display: 'flex', gap: '0.5rem' }}>
           <button className="action-btn" onClick={handleExport} title="Export Backup">
             <Upload size={18} />
@@ -127,6 +162,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           />
         </div>
       </div>
+
+      <ActivityHeatmap tasks={tasks} />
 
       <div className="scrollable sidebar-content">
         <TaskList

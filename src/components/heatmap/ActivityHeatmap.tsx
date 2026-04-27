@@ -31,7 +31,6 @@ export const ActivityHeatmap: React.FC<ActivityHeatmapProps> = ({ tasks }) => {
 
   return (
     <div className="activity-heatmap">
-      <h3 className="heatmap-title">SYSTEM PROGRESS</h3>
       <div className="heatmap-grid">
         {heatmapDays.map((day) => {
           const intensity = getDayIntensity(day);

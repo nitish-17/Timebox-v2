@@ -1,24 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { X, Settings, Cpu, Globe, Database, Save, Check } from 'lucide-react';
-import { useStore } from '../hooks/useStore';
-import type { AIProvider, AISettings } from '../types';
+import React, { useState, useEffect } from "react";
+import { X, Settings, Cpu, Globe, Database, Save, Check } from "lucide-react";
+import { useStore } from "../hooks/useStore";
+import type { AIProvider, AISettings } from "../types";
 
 interface SettingsModalProps {
   onClose: () => void;
 }
 
-const PROVIDER_DEFAULTS: Record<AIProvider, { baseUrl: string; model: string }> = {
+const PROVIDER_DEFAULTS: Record<
+  AIProvider,
+  { baseUrl: string; model: string }
+> = {
   ollama: {
-    baseUrl: 'http://localhost:11434/v1',
-    model: 'llama3',
+    baseUrl: "http://localhost:11434/v1",
+    model: "gemma4:e4b",
   },
   lmstudio: {
-    baseUrl: 'http://localhost:1234/v1',
-    model: 'local-model',
+    baseUrl: "http://localhost:1234/v1",
+    model: "local-model",
   },
   openai: {
-    baseUrl: 'https://api.openai.com/v1',
-    model: 'gpt-3.5-turbo',
+    baseUrl: "https://api.openai.com/v1",
+    model: "gpt-3.5-turbo",
   },
 };
 
@@ -29,12 +32,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         onClose();
       }
     };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [onClose]);
 
   const handleProviderChange = (provider: AIProvider) => {
@@ -57,29 +60,34 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content glass-panel glow-border" onClick={e => e.stopPropagation()}>
+      <div
+        className="modal-content glass-panel glow-border"
+        onClick={(e) => e.stopPropagation()}
+      >
         <header className="modal-header">
           <div className="title-group">
             <Settings size={18} className="title-icon" />
             <h2 className="modal-title h-glow">System Settings</h2>
           </div>
-          <button onClick={onClose} className="close-btn"><X size={20} /></button>
+          <button onClick={onClose} className="close-btn">
+            <X size={20} />
+          </button>
         </header>
 
         <form onSubmit={handleSave} className="modal-body">
           <section className="settings-section">
             <label className="section-label">AI Intelligence Provider</label>
             <div className="provider-grid">
-              {(['ollama', 'lmstudio', 'openai'] as AIProvider[]).map(p => (
+              {(["lmstudio", "ollama", "openai"] as AIProvider[]).map((p) => (
                 <button
                   key={p}
                   type="button"
-                  className={`provider-card ${localSettings.provider === p ? 'active' : ''}`}
+                  className={`provider-card ${localSettings.provider === p ? "active" : ""}`}
                   onClick={() => handleProviderChange(p)}
                 >
-                  {p === 'ollama' && <Database size={20} />}
-                  {p === 'lmstudio' && <Cpu size={20} />}
-                  {p === 'openai' && <Globe size={20} />}
+                  {p === "lmstudio" && <Cpu size={20} />}
+                  {p === "ollama" && <Database size={20} />}
+                  {p === "openai" && <Globe size={20} />}
                   <span className="provider-name">{p.toUpperCase()}</span>
                 </button>
               ))}
@@ -93,7 +101,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
                 type="text"
                 className="settings-input"
                 value={localSettings.baseUrl}
-                onChange={e => setLocalSettings({ ...localSettings, baseUrl: e.target.value })}
+                onChange={(e) =>
+                  setLocalSettings({
+                    ...localSettings,
+                    baseUrl: e.target.value,
+                  })
+                }
                 placeholder="http://localhost:11434/v1"
               />
             </div>
@@ -104,19 +117,26 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
                 type="text"
                 className="settings-input"
                 value={localSettings.model}
-                onChange={e => setLocalSettings({ ...localSettings, model: e.target.value })}
+                onChange={(e) =>
+                  setLocalSettings({ ...localSettings, model: e.target.value })
+                }
                 placeholder="llama3"
               />
             </div>
 
-            {localSettings.provider === 'openai' && (
+            {localSettings.provider === "openai" && (
               <div className="input-group">
                 <label className="input-label">API Key</label>
                 <input
                   type="password"
                   className="settings-input"
-                  value={localSettings.apiKey || ''}
-                  onChange={e => setLocalSettings({ ...localSettings, apiKey: e.target.value })}
+                  value={localSettings.apiKey || ""}
+                  onChange={(e) =>
+                    setLocalSettings({
+                      ...localSettings,
+                      apiKey: e.target.value,
+                    })
+                  }
                   placeholder="sk-..."
                 />
               </div>
@@ -127,11 +147,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
             <div className="kb-hint">Press ESC to cancel</div>
             <button
               type="submit"
-              className={`save-btn ${isSaved ? 'success' : ''}`}
+              className={`save-btn ${isSaved ? "success" : ""}`}
               disabled={isSaved}
             >
               {isSaved ? <Check size={18} /> : <Save size={18} />}
-              <span>{isSaved ? 'Settings Saved' : 'Save Configuration'}</span>
+              <span>{isSaved ? "Settings Saved" : "Save Configuration"}</span>
             </button>
           </div>
         </form>

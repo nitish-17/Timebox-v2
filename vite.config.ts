@@ -65,4 +65,5 @@ export default defineConfig({
     // Increase the limit to 700 to silence the core vendor warning
     chunkSizeWarningLimit: 700,
   },
+  // base: "/Timebox-v2/",
 });

@@ -1,15 +1,18 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
-import type { Task } from '../types';
-import type { SystemMessage } from '../components/SystemNotifications';
+import { useState, useCallback, useEffect, useRef } from "react";
+import type { Task } from "../types";
+import type { SystemMessage } from "../components/SystemNotifications";
 
 export function useSystemAI(tasks: Task[]) {
   const [messages, setMessages] = useState<SystemMessage[]>([]);
   const prevTasksRef = useRef<Task[]>([]);
 
-  const addMessage = useCallback((type: SystemMessage['type'], title: string, description: string) => {
-    const id = Math.random().toString(36).substr(2, 9);
-    setMessages((prev) => [...prev, { id, type, title, description }]);
-  }, []);
+  const addMessage = useCallback(
+    (type: SystemMessage["type"], title: string, description: string) => {
+      const id = Math.random().toString(36).substr(2, 9);
+      setMessages((prev) => [...prev, { id, type, title, description }]);
+    },
+    [],
+  );
 
   const dismissMessage = useCallback((id: string) => {
     setMessages((prev) => prev.filter((m) => m.id !== id));
@@ -27,14 +30,11 @@ export function useSystemAI(tasks: Task[]) {
         const prevTask = prevTasks.find((t) => t.id === task.id);
         if (prevTask && !prevTask.completed && task.completed) {
           // Task was just completed!
-          const rewards = [
-            "XP Gained: +100",
-            "Skill Point Awarded",
-            "Fatigue Reduced",
-            "Level Progress: 15%",
-          ];
-          const randomReward = rewards[Math.floor(Math.random() * rewards.length)];
-          addMessage('QUEST_CLEARED', 'QUEST CLEARED', `Task "${task.title}" completed. ${randomReward}`);
+          addMessage(
+            "QUEST_CLEARED",
+            "QUEST CLEARED",
+            `Task "${task.title}" completed. XP GAINED: +100`,
+          );
         }
       });
     }
@@ -43,10 +43,14 @@ export function useSystemAI(tasks: Task[]) {
 
   // Initial greeting
   useEffect(() => {
-    const hasGreeted = sessionStorage.getItem('system_greeted');
+    const hasGreeted = sessionStorage.getItem("system_greeted");
     if (!hasGreeted) {
-      addMessage('QUEST_CLEARED', 'SYSTEM INITIALIZED', 'Welcome back, Player. Today\'s missions are ready.');
-      sessionStorage.setItem('system_greeted', 'true');
+      addMessage(
+        "QUEST_CLEARED",
+        "SYSTEM INITIALIZED",
+        "Welcome back, Player. Today's missions are ready.",
+      );
+      sessionStorage.setItem("system_greeted", "true");
     }
   }, [addMessage]);
 
@@ -54,6 +58,6 @@ export function useSystemAI(tasks: Task[]) {
     messages,
     dismissMessage,
     dismissAllMessages,
-    addMessage
+    addMessage,
   };
 }

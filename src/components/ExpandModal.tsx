@@ -69,9 +69,10 @@ export const ExpandModal: React.FC<ExpandModalProps> = ({
       setTimeout(() => textareaRef.current?.focus(), 50);
     } catch (error) {
       alert(
-        "Failed to expand tasks. Make sure LM Studio is running at localhost:1234",
+        "Failed to generate tasks. Make sure LM Studio is running at localhost:1234",
       );
-    } finally {
+    }
+ finally {
       setIsLoading(false);
     }
   };
@@ -111,7 +112,7 @@ export const ExpandModal: React.FC<ExpandModalProps> = ({
           <div className="title-group">
             <Sparkles size={18} className="title-icon" />
             <h2 className="modal-title h-glow">
-              {isReviewMode ? "Review Quests" : "Expand Mission"}
+              {isReviewMode ? "Review Quests" : "Generate Tasks"}
             </h2>
           </div>
           <button onClick={onClose} className="close-btn">

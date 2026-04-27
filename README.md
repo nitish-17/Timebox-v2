@@ -1,58 +1,59 @@
-# ⏱️ Timebox
+# ⏱️ TIMEBOX: THE SYSTEM
 
-> **🚀 Deployed Website:** [https://nitish-17.github.io/Timebox-v2/](https://nitish-17.github.io/Timebox-v2/)
+> **🚀 Access Terminal:** [https://nitish-17.github.io/Timebox-v2/](https://nitish-17.github.io/Timebox-v2/)
 
-## 📖 About the Project
+## 📖 Overview
 
-A minimalist personal time-boxing application inspired by [timebox.so](https://www.timebox.so/). Designed with a local-first philosophy, the app ensures all your data remains private and is stored securely within your browser.
+Timebox is a minimalist, high-performance personal planning application designed for deep work and precision scheduling. Inspired by the "Solo Leveling" aesthetic, it transforms your daily grind into a structured quest for productivity. 
 
-## ✨ Features
+**Local-First Philosophy:** Your data never leaves your machine. Everything is stored securely in your browser's IndexedDB.
 
-- **Daily Planning:** Effortlessly add tasks and notes for every day.
-- **Rapid Scheduling:** Quickly schedule tasks on the calendar for efficient time-boxing and time-blocking.
-- **Data Portability:** Built-in Export and Import functionality to save your data to a file, providing a backup whenever you need to clear your browser data.
-- **AI-Powered Planning:** Works with local LLMs (LM Studio) for automated idea -> tasks, task -> notes(steps).
-- **Enhanced UI:** Features an updated Solo Leveling-inspired UI.
+---
 
-## ⌨️ Keyboard Navigation
+## ✨ System Features
 
-- **`/`** : Open the **Commands & Options** menu.
-- **`T`** : Focus cursor on the **Today's Task** input.
-- **`L`** : Focus cursor on the **Later Task** input.
-- **`N`** : Focus cursor on the **Notes** input.
-- **`Esc`** : Remove cursor focus or **Close** active popups/menus.
+### ⚡ Energy Monitoring
+The sidebar header features a real-time **Energy Bar**. It tracks your biological clock, peaking at 06:00 (100%) and reaching its minimum at 00:00 (0%). Use it to align your most demanding "Boss Raids" with your peak energy levels.
 
-## 🤖 AI Commands & Customization
+### 📅 Precision Time-Blocking
+Drag and drop tasks from your log directly onto the calendar. Visualize your day with surgical precision to eliminate dead time and context switching.
 
-The AI features require **LM Studio** to be running locally. Use the `/` menu to access:
+### 📓 Categorized Multi-Logs
+The updated Notes system allows you to manage different streams of consciousness:
+- **Persistent Logs:** Maintenance, Habits, Joy, and Backlog. These stay with you every day.
+- **Variable Logs:** Observation, Tracking, and Other. Specific to your current date.
+- **Task Extraction:** Instantly convert any bulleted list in your notes into actionable tasks with one click.
 
-- **`expand task`** : Generates tasks based on the input you provide.
-- **`brief task`** : Breaks a task down into smaller steps and pastes the output into your Notes.
+### 📊 System Progress
+Monitor your consistency with the integrated **Activity Heatmap**. Every completed task contributes to your "System Rank."
 
-### 🎛️ Fully Editable Payloads
+### 📤 Data Sovereignty
+- **Full Backups:** Export/Import your entire database as a JSON file.
+- **Markdown Extraction:** Export specific date ranges of your logs (Observations, Tracking, etc.) into clean, human-readable Markdown files for your personal archives.
 
-1.  A window appears showing the **System Prompt** and the **Task Data**.
-2.  **Modify Anything:** You can edit the system instructions to change how the AI responds.
-3.  **Manual Override:** You can completely remove the task data and type a custom query.
+---
 
-## ⚙️ Local AI Setup (LM Studio)
+## ⌨️ Tactical Shortcuts
 
-Keep your data private by running your own models locally.
+- **`/`** : Open **Command Palette** (AI & Tactical Options).
+- **`?`** : View **System Info & Help** (Coming Soon).
+- **`T`** : Focus **Today's Task** input.
+- **`L`** : Focus **Later Task** input.
+- **`N`** : Focus **Notes** textarea.
+- **`Esc`** : Blur current input or **Close** active menus.
 
-### 1. Install LM Studio
+---
 
-Download the client from [lmstudio.ai](https://lmstudio.ai/).
+## 🤖 AI Commands
 
-### 2. Download a Recommended Model
+Access these via the `/` menu to augment your planning:
 
-Recommended models based on your hardware(ram/gpu):
+- **`generate task`** : Deconstruct a complex objective into a sequence of manageable sub-tasks.
+- **`breakdown task`** : Generate a "First 15 Minutes" tactical briefing for any task, automatically appended to your **Other** logs.
+- **`plan day`** : Automate your schedule based on your current task load and preferred intervals.
 
-- `qwen/qwen3-4b-2507` (~4.3 GB)
-- `gemma-4-e4b-it` (~9.0 GB)
+---
 
-### 3. Initialize the Server
+## 🔒 Privacy & Security
 
-1.  Navigate to the **Local Server** tab.
-2.  Click **Start Server**.
-3.  Click **+ Load Model** and select your chosen model.
-4.  The application will connect via the default endpoint: `http://127.0.0.1:1234`.
+Timebox is entirely serverless. No accounts, no tracking, no cloud syncing. Your "System" is yours alone.

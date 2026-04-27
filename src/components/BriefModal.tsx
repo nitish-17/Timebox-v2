@@ -96,7 +96,7 @@ ${task}`;
           <div className="title-group">
             <FileText size={18} className="title-icon" />
             <h2 className="modal-title h-glow">
-              {isReviewMode ? 'Review Brief' : 'Mission Briefing'}
+              {isReviewMode ? 'Review Brief' : 'Breakdown Task'}
             </h2>
           </div>
           <button onClick={onClose} className="close-btn"><X size={20} /></button>
@@ -135,7 +135,7 @@ ${task}`;
             
             <div className="modal-footer">
               <div className="kb-hint">
-                {isReviewMode ? 'Review and edit briefing' : 'Press ⌘+Enter to brief'}
+                {isReviewMode ? 'Review and edit briefing' : 'Press ⌘+Enter to breakdown'}
               </div>
               <button 
                 type="submit" 

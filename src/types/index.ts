@@ -26,10 +26,21 @@ export interface AISettings {
   apiKey?: string;
 }
 
+export type NoteType = 
+  | 'maintenance' | 'habits' | 'joy' | 'backlog' // Persistent
+  | 'observation' | 'tracking' | 'other';      // Transient
+
+export interface SystemNote {
+  id?: number;
+  type: NoteType;
+  date: string; // 'global' for persistent, 'YYYY-MM-DD' for transient
+  content: string;
+}
+
 export interface AppState {
   tasks: Task[];
   timeBlocks: TimeBlock[];
-  notes: Record<string, string>; // date -> content
+  notes: Record<string, Record<string, string>>; // type -> date -> content
   selectedDate: string; // YYYY-MM-DD
   aiSettings: AISettings;
 }

@@ -27,8 +27,8 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
 
   const commands = [
-    { id: 'expand', label: 'Expand Tasks (AI)', icon: <Sparkles size={14} /> },
-    { id: 'brief', label: 'Brief Task (AI)', icon: <FileText size={14} /> },
+    { id: 'expand', label: 'Generate Tasks (AI)', icon: <Sparkles size={14} /> },
+    { id: 'brief', label: 'Breakdown Task (AI)', icon: <FileText size={14} /> },
     { id: 'plan', label: 'Auto-schedule', icon: <Calendar size={14} /> }
   ];
 
@@ -127,7 +127,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
             <input 
               ref={inputRef}
               type="text" 
-              placeholder={stage === 'COMMANDS' ? "Search system commands..." : "Select task to brief..."}
+              placeholder={stage === 'COMMANDS' ? "Search system commands..." : "Select task to breakdown..."}
               value={searchQuery}
               onChange={(e) => {
                 setSearchQuery(e.target.value);
