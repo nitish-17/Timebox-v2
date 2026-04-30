@@ -2,7 +2,7 @@ export interface Task {
   id: string;
   title: string;
   completed: boolean;
-  list: 'today' | 'later';
+  list: "today" | "later";
   createdAt: string;
   date?: string; // YYYY-MM-DD for tasks assigned to a specific day
   color?: string;
@@ -17,7 +17,7 @@ export interface TimeBlock {
   color?: string;
 }
 
-export type AIProvider = 'ollama' | 'lmstudio' | 'openai';
+export type AIProvider = "ollama" | "lmstudio" | "openai";
 
 export interface AISettings {
   provider: AIProvider;
@@ -26,9 +26,14 @@ export interface AISettings {
   apiKey?: string;
 }
 
-export type NoteType = 
-  | 'maintenance' | 'habits' | 'joy' | 'backlog' // Persistent
-  | 'observation' | 'tracking' | 'other';      // Transient
+export type NoteType =
+  | "maintenance"
+  | "habits"
+  | "recharge"
+  | "backlog" // Persistent
+  | "observation"
+  | "tracking"
+  | "other"; // Transient
 
 export interface SystemNote {
   id?: number;
@@ -39,7 +44,7 @@ export interface SystemNote {
 
 export interface EnergyConfig {
   startTime: string; // HH:mm
-  endTime: string;   // HH:mm
+  endTime: string; // HH:mm
 }
 
 export interface AppState {

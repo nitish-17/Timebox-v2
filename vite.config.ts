@@ -10,7 +10,7 @@ export default defineConfig({
       registerType: "autoUpdate",
       includeAssets: ["favicon.svg"],
       manifest: {
-        name: "Timebox - Personal Planner",
+        name: "Timebox",
         short_name: "Timebox",
         description: "Deep Work & Hourly Planning",
         theme_color: "#020617",

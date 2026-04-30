@@ -160,7 +160,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
       <header className="schedule-header">
         <div className="header-left">
           <div className="date-picker-trigger" onClick={() => dateInputRef.current?.showPicker()}>
-            <Calendar size={18} className="calendar-icon-blue" />
+            <Calendar size={14} className="calendar-icon-blue" />
             <input 
               type="date" 
               ref={dateInputRef}
@@ -304,6 +304,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
           width: 0;
           height: 0;
           pointer-events: none;
+          color-scheme: dark;
         }
         .schedule-date-text {
           font-size: 0.9rem;

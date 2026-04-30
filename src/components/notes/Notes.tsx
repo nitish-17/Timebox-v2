@@ -1,44 +1,66 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { 
-  Copy, Check, ListPlus, FileDown, X, 
-  Wrench, Activity, Heart, Inbox, 
-  Eye, Target, Hash 
-} from 'lucide-react';
-import { format, eachDayOfInterval, parseISO } from 'date-fns';
-import type { NoteType, SystemNote } from '../../types';
+import React, { useState, useEffect, useRef } from "react";
+import {
+  Copy,
+  Check,
+  ListPlus,
+  FileDown,
+  X,
+  Wrench,
+  Repeat,
+  Zap,
+  Inbox,
+  List,
+  NotebookPen,
+  Hash,
+} from "lucide-react";
+import { format, eachDayOfInterval, parseISO } from "date-fns";
+import type { NoteType, SystemNote } from "../../types";
 
 interface NotesProps {
   date: string;
   notes: Record<string, Record<string, string>>;
   updateNote: (type: NoteType, date: string, content: string) => void;
-  addTasksBulk: (titles: string[], list: 'today' | 'later') => void;
-  addMessage: (type: 'QUEST_CLEARED', title: string, description: string) => void;
-  getNotesInRange: (startDate: string, endDate: string, type?: NoteType) => Promise<SystemNote[]>;
+  addTasksBulk: (titles: string[], list: "today" | "later") => void;
+  addMessage: (
+    type: "QUEST_CLEARED",
+    title: string,
+    description: string,
+  ) => void;
+  getNotesInRange: (
+    startDate: string,
+    endDate: string,
+    type?: NoteType,
+  ) => Promise<SystemNote[]>;
 }
 
-const PERSISTENT_TYPES: NoteType[] = ['maintenance', 'habits', 'joy', 'backlog'];
-const TRANSIENT_TYPES: NoteType[] = ['observation', 'tracking', 'other'];
+const PERSISTENT_TYPES: NoteType[] = [
+  "backlog",
+  "habits",
+  "maintenance",
+  "recharge",
+];
+const TRANSIENT_TYPES: NoteType[] = ["observation", "tracking", "other"];
 
 const NOTE_TYPE_ICONS: Record<NoteType, React.ReactNode> = {
-  maintenance: <Wrench size={16} />,
-  habits: <Activity size={16} />,
-  joy: <Heart size={16} />,
   backlog: <Inbox size={16} />,
-  observation: <Eye size={16} />,
-  tracking: <Target size={16} />,
+  habits: <Repeat size={16} />,
+  maintenance: <Wrench size={16} />,
+  recharge: <Zap size={16} />,
+  observation: <NotebookPen size={16} />,
+  tracking: <List size={16} />,
   other: <Hash size={16} />,
 };
 
-export const Notes: React.FC<NotesProps> = ({ 
-  date, 
-  notes, 
-  updateNote, 
-  addTasksBulk, 
+export const Notes: React.FC<NotesProps> = ({
+  date,
+  notes,
+  updateNote,
+  addTasksBulk,
   addMessage,
-  getNotesInRange 
+  getNotesInRange,
 }) => {
-  const [activeType, setActiveType] = useState<NoteType>('observation');
-  const [localNote, setLocalNote] = useState('');
+  const [activeType, setActiveType] = useState<NoteType>("observation");
+  const [localNote, setLocalNote] = useState("");
   const [copied, setCopied] = useState(false);
   const [isExportMenuOpen, setIsExportMenuOpen] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -46,7 +68,11 @@ export const Notes: React.FC<NotesProps> = ({
   // Export State
   const [exportStart, setExportStart] = useState(date);
   const [exportEnd, setExportEnd] = useState(date);
-  const [exportTypes, setExportTypes] = useState<NoteType[]>(['observation', 'tracking', 'other']);
+  const [exportTypes, setExportTypes] = useState<NoteType[]>([
+    "observation",
+    "tracking",
+    "other",
+  ]);
 
   // Sync export dates with selected date when menu opens
   useEffect(() => {
@@ -58,8 +84,8 @@ export const Notes: React.FC<NotesProps> = ({
 
   const getNoteContent = (type: NoteType, d: string) => {
     const typeNotes = notes[type] || {};
-    const effectiveDate = PERSISTENT_TYPES.includes(type) ? 'global' : d;
-    return typeNotes[effectiveDate] || '';
+    const effectiveDate = PERSISTENT_TYPES.includes(type) ? "global" : d;
+    return typeNotes[effectiveDate] || "";
   };
 
   const currentContent = getNoteContent(activeType, date);
@@ -70,13 +96,15 @@ export const Notes: React.FC<NotesProps> = ({
 
   const handleBlur = () => {
     if (localNote !== currentContent) {
-      const effectiveDate = PERSISTENT_TYPES.includes(activeType) ? 'global' : date;
+      const effectiveDate = PERSISTENT_TYPES.includes(activeType)
+        ? "global"
+        : date;
       updateNote(activeType, effectiveDate, localNote);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Escape') {
+    if (e.key === "Escape") {
       textareaRef.current?.blur();
       setIsExportMenuOpen(false);
     }
@@ -90,31 +118,38 @@ export const Notes: React.FC<NotesProps> = ({
 
   const handleConvertToTasks = () => {
     if (!localNote.trim()) return;
-    const lines = localNote.split('\n')
-      .map(line => line.trim())
-      .filter(line => line.length > 0)
-      .map(line => line.startsWith('- ') ? line.substring(2) : line);
-    
+    const lines = localNote
+      .split("\n")
+      .map((line) => line.trim())
+      .filter((line) => line.length > 0)
+      .map((line) => (line.startsWith("- ") ? line.substring(2) : line));
+
     if (lines.length > 0) {
-      addTasksBulk(lines, 'today');
-      addMessage('QUEST_CLEARED', 'SYSTEM SYNCHRONIZED', `${lines.length} tasks extracted from log.`);
+      addTasksBulk(lines, "today");
+      addMessage(
+        "QUEST_CLEARED",
+        "SYSTEM SYNCHRONIZED",
+        `${lines.length} tasks extracted from log.`,
+      );
     }
   };
 
   const toggleExportType = (type: NoteType) => {
-    setExportTypes(prev => 
-      prev.includes(type) ? prev.filter(t => t !== type) : [...prev, type]
+    setExportTypes((prev) =>
+      prev.includes(type) ? prev.filter((t) => t !== type) : [...prev, type],
     );
   };
 
   const handleExport = async () => {
     try {
       const allNotes = await getNotesInRange(exportStart, exportEnd);
-      const filteredNotes = allNotes.filter(n => exportTypes.includes(n.type));
-      
+      const filteredNotes = allNotes.filter((n) =>
+        exportTypes.includes(n.type),
+      );
+
       // Group by date
       const grouped: Record<string, SystemNote[]> = {};
-      filteredNotes.forEach(n => {
+      filteredNotes.forEach((n) => {
         if (!grouped[n.date]) grouped[n.date] = [];
         grouped[n.date].push(n);
       });
@@ -127,21 +162,22 @@ export const Notes: React.FC<NotesProps> = ({
 
       const days = eachDayOfInterval({
         start: parseISO(exportStart),
-        end: parseISO(exportEnd)
+        end: parseISO(exportEnd),
       });
 
-      days.forEach(day => {
-        const dStr = format(day, 'yyyy-MM-dd');
+      days.forEach((day) => {
+        const dStr = format(day, "yyyy-MM-dd");
         const dayNotes = grouped[dStr];
-        
+
         if (dayNotes && dayNotes.length > 0) {
-          md += `## ${format(day, 'EEEE, MMMM do, yyyy')}\n\n`;
+          md += `## ${format(day, "EEEE, MMMM do, yyyy")}\n\n`;
           // Sort by TRANSIENT_TYPES order
           const sortedDayNotes = [...dayNotes].sort(
-            (a, b) => TRANSIENT_TYPES.indexOf(a.type) - TRANSIENT_TYPES.indexOf(b.type)
+            (a, b) =>
+              TRANSIENT_TYPES.indexOf(a.type) - TRANSIENT_TYPES.indexOf(b.type),
           );
 
-          sortedDayNotes.forEach(n => {
+          sortedDayNotes.forEach((n) => {
             md += `### ${n.type.toUpperCase()}\n`;
             md += `${n.content}\n\n`;
           });
@@ -150,19 +186,23 @@ export const Notes: React.FC<NotesProps> = ({
       });
 
       // Download
-      const blob = new Blob([md], { type: 'text/markdown' });
+      const blob = new Blob([md], { type: "text/markdown" });
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
       a.download = `timebox-logs-${exportStart}-to-${exportEnd}.md`;
       a.click();
       URL.revokeObjectURL(url);
-      
+
       setIsExportMenuOpen(false);
-      addMessage('QUEST_CLEARED', 'EXPORT COMPLETE', `Markdown log generated for ${days.length} days.`);
+      addMessage(
+        "QUEST_CLEARED",
+        "EXPORT COMPLETE",
+        `Markdown log generated for ${days.length} days.`,
+      );
     } catch (error) {
-      console.error('Export failed:', error);
-      alert('Export failed. Check console for details.');
+      console.error("Export failed:", error);
+      alert("Export failed. Check console for details.");
     }
   };
 
@@ -172,10 +212,10 @@ export const Notes: React.FC<NotesProps> = ({
         <div className="notes-header-content">
           {/* Note Type Group */}
           <div className="notes-type-icons">
-            {PERSISTENT_TYPES.map(type => (
+            {PERSISTENT_TYPES.map((type) => (
               <button
                 key={type}
-                className={`note-type-btn persistent ${activeType === type ? 'active' : ''}`}
+                className={`note-type-btn persistent ${activeType === type ? "active" : ""}`}
                 onClick={() => setActiveType(type)}
                 title={type.toUpperCase()}
               >
@@ -183,10 +223,10 @@ export const Notes: React.FC<NotesProps> = ({
               </button>
             ))}
             <div className="type-separator" />
-            {TRANSIENT_TYPES.map(type => (
+            {TRANSIENT_TYPES.map((type) => (
               <button
                 key={type}
-                className={`note-type-btn transient ${activeType === type ? 'active' : ''}`}
+                className={`note-type-btn transient ${activeType === type ? "active" : ""}`}
                 onClick={() => setActiveType(type)}
                 title={type.toUpperCase()}
               >
@@ -199,27 +239,31 @@ export const Notes: React.FC<NotesProps> = ({
 
           {/* Utility Group */}
           <div className="notes-utility-icons">
-            <button 
-              className="note-type-btn" 
-              onClick={handleCopy} 
+            <button
+              className="note-type-btn"
+              onClick={handleCopy}
               title="Copy to Clipboard"
               disabled={!localNote}
               style={{ opacity: localNote ? 1 : 0.3 }}
             >
-              {copied ? <Check size={18} color="#22c55e" /> : <Copy size={18} />}
+              {copied ? (
+                <Check size={18} color="#22c55e" />
+              ) : (
+                <Copy size={18} />
+              )}
             </button>
 
-            <button 
-              className={`note-type-btn ${isExportMenuOpen ? 'active' : ''}`}
+            <button
+              className={`note-type-btn ${isExportMenuOpen ? "active" : ""}`}
               onClick={() => setIsExportMenuOpen(!isExportMenuOpen)}
               title="Export Logs"
             >
               <FileDown size={18} />
             </button>
-            
-            <button 
-              className="note-type-btn" 
-              onClick={handleConvertToTasks} 
+
+            <button
+              className="note-type-btn"
+              onClick={handleConvertToTasks}
               title="Convert to Tasks"
               disabled={!localNote}
               style={{ opacity: localNote ? 1 : 0.3 }}
@@ -234,16 +278,18 @@ export const Notes: React.FC<NotesProps> = ({
         <div className="export-menu glow-border">
           <div className="export-menu-header">
             <span>EXPORT SYSTEM LOGS</span>
-            <button onClick={() => setIsExportMenuOpen(false)}><X size={14} /></button>
+            <button onClick={() => setIsExportMenuOpen(false)}>
+              <X size={14} />
+            </button>
           </div>
-          
+
           <div className="export-menu-section">
             <label className="export-label">DATA TYPES</label>
             <div className="export-checkbox-group">
-              {TRANSIENT_TYPES.map(type => (
+              {TRANSIENT_TYPES.map((type) => (
                 <label key={type} className="export-checkbox-item">
-                  <input 
-                    type="checkbox" 
+                  <input
+                    type="checkbox"
                     checked={exportTypes.includes(type)}
                     onChange={() => toggleExportType(type)}
                   />
@@ -258,18 +304,18 @@ export const Notes: React.FC<NotesProps> = ({
             <div className="export-date-group">
               <div className="export-date-item">
                 <span>START</span>
-                <input 
-                  type="date" 
-                  value={exportStart} 
+                <input
+                  type="date"
+                  value={exportStart}
                   onChange={(e) => setExportStart(e.target.value)}
                   className="export-date-input"
                 />
               </div>
               <div className="export-date-item">
                 <span>END</span>
-                <input 
-                  type="date" 
-                  value={exportEnd} 
+                <input
+                  type="date"
+                  value={exportEnd}
                   onChange={(e) => setExportEnd(e.target.value)}
                   className="export-date-input"
                 />
@@ -277,7 +323,7 @@ export const Notes: React.FC<NotesProps> = ({
             </div>
           </div>
 
-          <button 
+          <button
             className="export-submit-btn"
             onClick={handleExport}
             disabled={exportTypes.length === 0}
@@ -292,11 +338,11 @@ export const Notes: React.FC<NotesProps> = ({
           id="notes-textarea"
           ref={textareaRef}
           placeholder={
-            PERSISTENT_TYPES.includes(activeType) 
-              ? `Persistent ${activeType} log...` 
-              : `${activeType.charAt(0).toUpperCase() + activeType.slice(1)} for ${date}...`
+            PERSISTENT_TYPES.includes(activeType)
+              ? `Name: ${activeType.toUpperCase()}\nDate Specific: False`
+              : `Name: ${activeType.toUpperCase()}\nDate: ${date}`
           }
-          value={localNote || ''}
+          value={localNote || ""}
           onChange={(e) => setLocalNote(e.target.value)}
           onBlur={handleBlur}
           onKeyDown={handleKeyDown}

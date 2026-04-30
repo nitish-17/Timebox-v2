@@ -29,6 +29,7 @@ export const CommandPalette: React.FC<CommandPaletteProps> = ({
   const commands = [
     { id: 'expand', label: 'Generate Tasks (AI)', icon: <Sparkles size={14} /> },
     { id: 'brief', label: 'Breakdown Task (AI)', icon: <FileText size={14} /> },
+    { id: 'ask', label: 'Ask AI (AI)', icon: <Sparkles size={14} /> },
     { id: 'plan', label: 'Auto-schedule', icon: <Calendar size={14} /> }
   ];
 

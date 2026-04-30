@@ -11,6 +11,7 @@ import { PlanModal } from "./components/PlanModal";
 import { SettingsModal } from "./components/SettingsModal";
 import { HelpModal } from "./components/HelpModal";
 import { StatusPanel } from "./components/StatusPanel";
+import { AskAIModal } from "./components/AskAIModal";
 import { DndContext } from "@dnd-kit/core";
 import { useState, useCallback, useEffect } from "react";
 import { calculateDuration } from "./hooks/usePlanningUtils";
@@ -68,6 +69,7 @@ function App() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [isStatusPanelOpen, setIsStatusPanelOpen] = useState(false);
+  const [isAskAIModalOpen, setIsAskAIModalOpen] = useState(false);
   const [selectedTaskForBrief, setSelectedTaskForBrief] = useState<Task | null>(
     null,
   );
@@ -148,6 +150,9 @@ function App() {
       } else if (command === "plan") {
         setIsCommandPaletteOpen(false);
         setIsPlanModalOpen(true);
+      } else if (command === "ask") {
+        setIsCommandPaletteOpen(false);
+        setIsAskAIModalOpen(true);
       }
     },
     [],
@@ -228,6 +233,8 @@ function App() {
           setIsHelpModalOpen(false);
         } else if (isStatusPanelOpen) {
           setIsStatusPanelOpen(false);
+        } else if (isAskAIModalOpen) {
+          setIsAskAIModalOpen(false);
         } else if (
           activeEl instanceof HTMLInputElement ||
           activeEl instanceof HTMLTextAreaElement
@@ -247,6 +254,7 @@ function App() {
     isSettingsOpen,
     isHelpModalOpen,
     isStatusPanelOpen,
+    isAskAIModalOpen,
     dismissAllMessages,
   ]);
 
@@ -295,6 +303,10 @@ function App() {
 
         {isHelpModalOpen && (
           <HelpModal onClose={() => setIsHelpModalOpen(false)} />
+        )}
+
+        {isAskAIModalOpen && (
+          <AskAIModal onClose={() => setIsAskAIModalOpen(false)} />
         )}
 
         {isStatusPanelOpen && (

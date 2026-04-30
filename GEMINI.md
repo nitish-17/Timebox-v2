@@ -15,51 +15,71 @@ Timebox is a minimalist, local-first personal planning application designed for 
 - Dual-list system: **Today** (date-specific) and **Later** (backlog).
 - Drag-and-drop support for reordering and calendar scheduling.
 - Integrated color-coding and bulk-add capabilities.
+- Minimalist header-free layout to maximize vertical task space.
 
 ### Visual Scheduling (Main Column)
 
 - Driven by **FullCalendar v6**, providing a precision TimeGrid view.
 - Real-time synchronization between task cards and calendar time-blocks.
 - Automatic scrolling to the current time and "now" indicator.
+- **Text-Only Header**: Integrated date picker (icon-triggered) and minimalist navigation (`< TODAY >`).
 
 ### Daily Context (Notes Column)
 
-- Markdown-compatible text area for capturing thoughts, plans, and AI-generated briefs.
-- Integrated **Activity Heatmap** for visualizing historical productivity.
+- Multi-category note system with icon-based navigation.
+- **Persistent Notes**: Maintenance, Habits, Fun, Backlog (global state).
+- **Transient Notes**: Observation, Tracking, Other (date-specific state).
+- Built-in Markdown export for historical logging.
+
+### System Monitoring (Popup)
+
+- **System Status (`.`)**: A dedicated overlay for system metrics and data health.
+- **Energy Core**: Dynamic productivity tracking based on user-defined start/end times.
+- **Activity Heatmap**: Visual history of task completion frequency.
+- **Data Management**: Circular icon-only buttons for JSON backup and restoration.
 
 ### AI-Enhanced Workflows
 
-- **Mission Expansion**: Programmatically or AI-assisted deconstruction of complex goals into sequential tasks.
-- **Tactical Briefing**: AI-assisted research and "first 15 minutes" guidance for specific tasks.
-- **Strategic Planning**: Automated schedule generation based on task counts, durations, and break intervals.
+- **Generate Tasks**: AI-assisted deconstruction of complex goals into sequential tasks.
+- **Breakdown Task**: Tactical research and "first 15 minutes" guidance for specific missions.
+- **Ask AI**: A general-purpose AI brainstormer with templated prompts (# persona, # task, etc.).
+- **Auto-schedule**: Automated generation of time-blocks based on priorities and durations.
 
 ## 3. Technical Architecture
 
 ### Frontend Framework
 
 - **React 19 + Vite + TypeScript**: Modern, type-safe development environment with extremely fast builds.
-- **Vanilla CSS**: Clean, performant styling using CSS variables for theming and specialized performance-focused container properties.
+- **Vanilla CSS**: Performance-focused styling using CSS variables, hardware-accelerated transforms, and strict layout containment.
 
 ### Data & State
 
-- **Dexie.js (IndexedDB)**: Robust, reactive local storage. The `useStore` hook acts as the central orchestrator for all database CRUD operations.
-- **Live Queries**: Automatic UI updates whenever the underlying database changes, ensuring zero-latency data binding.
+- **Dexie.js (IndexedDB)**: Robust, reactive local storage. The `useStore` hook orchestrates all database CRUD operations and settings persistence.
+- **Live Queries**: Automatic UI updates whenever the underlying database changes.
 
 ### Utilities & Integrations
 
-- **date-fns**: Primary engine for time manipulation, normalization, and range calculations.
-- **LM Studio / OpenAI API**: Generic API client in `useAI.ts` that communicates with local or remote LLMs for intelligent processing.
-- **Floating UI**: Powers precise positioning for the Command Palette, Tooltips, and Color Pickers.
+- **date-fns**: Primary engine for time manipulation and range calculations.
+- **LM Studio / OpenAI API**: Generic API client for local or remote LLM processing.
+- **Floating UI**: Powers precise positioning for the Command Palette, Tooltips, and Modals.
 
 ## 4. Key Implementation Details
 
-- **Performance**: High-density task lists are optimized via `React.memo`, `will-change: transform`, and hardware-accelerated layouts (`translateZ(0)`).
-- **Navigation**: Extensive shortcut system (`/` for Hub, `n` for Notes, `t` for Today, `l` for Later, `Esc` for Blur/Close).
-- **Portability**: Built-in JSON export/import for full database backup and restoration.
+- **Performance**: High-density lists and scrolling areas optimized via GPU acceleration and render containment.
+- **Navigation Shortcuts**:
+    - `/`: Command Palette (Generate, Breakdown, Ask AI, Schedule)
+    - `.`: System Status (Energy, Heatmap, Backup)
+    - `?`: System Manual
+    - `n`: Focus Notes
+    - `t`: Focus Today's Input
+    - `l`: Focus Later Input
+    - `,`: Configure AI Settings
+    - `Esc`: Close Modals / Clear Focus
+- **Portability**: JSON export/import for full environment backup.
 
 ## 5. File System Organization
 
-- `/src/components`: UI components categorized by feature (sidebar, schedule, notes, heatmap).
+- `/src/components`: UI components categorized by feature (sidebar, schedule, notes, status, heatmap).
 - `/src/hooks`: Centralized business logic (state management, AI interaction, planning utilities).
 - `/src/db`: Database schema definitions and Dexie initialization.
-- `/src/types`: Global TypeScript interfaces defining the core domain entities (Task, TimeBlock, AppState).
+- `/src/types`: Global TypeScript interfaces defining the core domain entities.
