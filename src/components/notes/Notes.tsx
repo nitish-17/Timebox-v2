@@ -1,5 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Copy, Check, ListPlus, FileDown, X } from 'lucide-react';
+import { 
+  Copy, Check, ListPlus, FileDown, X, 
+  Wrench, Activity, Heart, Inbox, 
+  Eye, Target, Hash 
+} from 'lucide-react';
 import { format, eachDayOfInterval, parseISO } from 'date-fns';
 import type { NoteType, SystemNote } from '../../types';
 
@@ -14,6 +18,16 @@ interface NotesProps {
 
 const PERSISTENT_TYPES: NoteType[] = ['maintenance', 'habits', 'joy', 'backlog'];
 const TRANSIENT_TYPES: NoteType[] = ['observation', 'tracking', 'other'];
+
+const NOTE_TYPE_ICONS: Record<NoteType, React.ReactNode> = {
+  maintenance: <Wrench size={16} />,
+  habits: <Activity size={16} />,
+  joy: <Heart size={16} />,
+  backlog: <Inbox size={16} />,
+  observation: <Eye size={16} />,
+  tracking: <Target size={16} />,
+  other: <Hash size={16} />,
+};
 
 export const Notes: React.FC<NotesProps> = ({ 
   date, 
@@ -155,52 +169,65 @@ export const Notes: React.FC<NotesProps> = ({
   return (
     <div className="notes-panel relative-container">
       <header className="notes-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-          <select 
-            className="notes-type-selector"
-            value={activeType}
-            onChange={(e) => setActiveType(e.target.value as NoteType)}
-          >
-            <optgroup label="PERSISTENT">
-              {PERSISTENT_TYPES.map(t => (
-                <option key={t} value={t}>{t.toUpperCase()}</option>
-              ))}
-            </optgroup>
-            <optgroup label="VARIABLE">
-              {TRANSIENT_TYPES.map(t => (
-                <option key={t} value={t}>{t.toUpperCase()}</option>
-              ))}
-            </optgroup>
-          </select>
-          
-          <button 
-            className="action-btn" 
-            onClick={handleCopy} 
-            title="Copy to Clipboard"
-            disabled={!localNote}
-            style={{ opacity: localNote ? 1 : 0.3 }}
-          >
-            {copied ? <Check size={18} color="#22c55e" /> : <Copy size={18} />}
-          </button>
+        <div className="notes-header-content">
+          {/* Note Type Group */}
+          <div className="notes-type-icons">
+            {PERSISTENT_TYPES.map(type => (
+              <button
+                key={type}
+                className={`note-type-btn persistent ${activeType === type ? 'active' : ''}`}
+                onClick={() => setActiveType(type)}
+                title={type.toUpperCase()}
+              >
+                {NOTE_TYPE_ICONS[type]}
+              </button>
+            ))}
+            <div className="type-separator" />
+            {TRANSIENT_TYPES.map(type => (
+              <button
+                key={type}
+                className={`note-type-btn transient ${activeType === type ? 'active' : ''}`}
+                onClick={() => setActiveType(type)}
+                title={type.toUpperCase()}
+              >
+                {NOTE_TYPE_ICONS[type]}
+              </button>
+            ))}
+          </div>
 
-          <button 
-            className={`action-btn ${isExportMenuOpen ? 'active' : ''}`}
-            onClick={() => setIsExportMenuOpen(!isExportMenuOpen)}
-            title="Export Logs"
-          >
-            <FileDown size={18} />
-          </button>
+          <div className="type-separator" />
+
+          {/* Utility Group */}
+          <div className="notes-utility-icons">
+            <button 
+              className="note-type-btn" 
+              onClick={handleCopy} 
+              title="Copy to Clipboard"
+              disabled={!localNote}
+              style={{ opacity: localNote ? 1 : 0.3 }}
+            >
+              {copied ? <Check size={18} color="#22c55e" /> : <Copy size={18} />}
+            </button>
+
+            <button 
+              className={`note-type-btn ${isExportMenuOpen ? 'active' : ''}`}
+              onClick={() => setIsExportMenuOpen(!isExportMenuOpen)}
+              title="Export Logs"
+            >
+              <FileDown size={18} />
+            </button>
+            
+            <button 
+              className="note-type-btn" 
+              onClick={handleConvertToTasks} 
+              title="Convert to Tasks"
+              disabled={!localNote}
+              style={{ opacity: localNote ? 1 : 0.3 }}
+            >
+              <ListPlus size={18} />
+            </button>
+          </div>
         </div>
-        
-        <button 
-          className="action-btn" 
-          onClick={handleConvertToTasks} 
-          title="Convert to Tasks"
-          disabled={!localNote}
-          style={{ opacity: localNote ? 1 : 0.3 }}
-        >
-          <ListPlus size={18} />
-        </button>
       </header>
 
       {isExportMenuOpen && (

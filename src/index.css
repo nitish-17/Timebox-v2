@@ -167,49 +167,71 @@ input, textarea {
 }
 
 .notes-header {
-  height: 50px;
-  padding: 0 1.5rem;
+  height: 40px;
+  padding: 0 0.5rem;
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
-  justify-content: space-between;
   background: rgba(15, 23, 42, 0.4);
 }
 
-.notes-type-selector {
+.notes-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  flex-wrap: nowrap;
+  min-width: 0;
+}
+
+.notes-type-icons, .notes-utility-icons {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+}
+
+.note-type-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
+  cursor: pointer;
   background: none;
   border: none;
+  flex-shrink: 0;
+}
+
+.note-type-btn.persistent {
+  background: none;
+}
+
+.note-type-btn.transient {
+  background: rgba(14, 165, 233, 0.05);
+}
+
+.note-type-btn:hover {
   color: var(--text-primary);
-  font-family: var(--font-family);
-  font-size: 0.9rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.15em;
-  cursor: pointer;
-  outline: none;
-  padding: 0.4rem 0.6rem;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-  width: auto;
-  max-width: 100%;
-  text-shadow: 0 0 10px var(--accent);
+  background: rgba(14, 165, 233, 0.15) !important;
 }
 
-.notes-type-selector:hover {
-  background: rgba(14, 165, 233, 0.1);
+.note-type-btn.active {
+  color: var(--accent) !important;
+  text-shadow: 0 0 10px var(--accent) !important;
+  background: rgba(14, 165, 233, 0.15) !important;
 }
 
-.notes-type-selector option, .notes-type-selector optgroup {
-  background: var(--bg-primary);
-  color: var(--text-primary);
-  font-family: var(--font-family);
-  padding: 8px;
-}
-
-.notes-type-selector optgroup {
-  color: var(--text-secondary);
-  font-size: 0.7rem;
-  font-weight: 400;
+.type-separator {
+  width: 1px;
+  height: 16px;
+  background: var(--border);
+  margin: 0 4px;
+  opacity: 0.25;
+  flex-shrink: 0;
 }
 
 .export-menu {

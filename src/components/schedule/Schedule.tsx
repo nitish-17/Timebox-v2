@@ -306,7 +306,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
           pointer-events: none;
         }
         .schedule-date-text {
-          font-size: 1.0rem;
+          font-size: 0.9rem;
           font-weight: 600;
           text-transform: uppercase;
           letter-spacing: 0.15em;
@@ -325,7 +325,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
           color: var(--text-primary);
           text-shadow: 0 0 15px var(--accent);
           font-family: var(--font-family);
-          font-size: 1.0rem;
+          font-size: 0.9rem;
           font-weight: bold;
           cursor: pointer;
           transition: all 0.2s;
