@@ -37,10 +37,16 @@ export interface SystemNote {
   content: string;
 }
 
+export interface EnergyConfig {
+  startTime: string; // HH:mm
+  endTime: string;   // HH:mm
+}
+
 export interface AppState {
   tasks: Task[];
   timeBlocks: TimeBlock[];
   notes: Record<string, Record<string, string>>; // type -> date -> content
   selectedDate: string; // YYYY-MM-DD
   aiSettings: AISettings;
+  energyConfig: EnergyConfig;
 }

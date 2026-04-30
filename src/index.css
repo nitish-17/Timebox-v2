@@ -373,7 +373,7 @@ input, textarea {
   height: 2px;
   background: rgba(14, 165, 233, 0.1);
   border-radius: 1px;
-  margin-top: 4px; /* Align visually with text baseline */
+  margin-top: 4px;
   position: relative;
 }
 
@@ -387,6 +387,7 @@ input, textarea {
     0 0 40px var(--accent);
   transition: width 1s ease-in-out;
   position: relative;
+  border-radius: 1px;
 }
 
 .energy-bar-fill::after {

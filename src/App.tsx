@@ -10,6 +10,7 @@ import { BriefModal } from "./components/BriefModal";
 import { PlanModal } from "./components/PlanModal";
 import { SettingsModal } from "./components/SettingsModal";
 import { HelpModal } from "./components/HelpModal";
+import { StatusPanel } from "./components/StatusPanel";
 import { DndContext } from "@dnd-kit/core";
 import { useState, useCallback, useEffect } from "react";
 import { calculateDuration } from "./hooks/usePlanningUtils";
@@ -66,6 +67,7 @@ function App() {
   const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
+  const [isStatusPanelOpen, setIsStatusPanelOpen] = useState(false);
   const [selectedTaskForBrief, setSelectedTaskForBrief] = useState<Task | null>(
     null,
   );
@@ -189,6 +191,14 @@ function App() {
         }
       }
 
+      if (e.key === "." && !isStatusPanelOpen && !isHelpModalOpen) {
+        if (!isTyping) {
+          e.preventDefault();
+          if (activeEl instanceof HTMLElement) activeEl.blur();
+          setIsStatusPanelOpen(true);
+        }
+      }
+
       if (!isTyping && !isCommandPaletteOpen && !isHelpModalOpen) {
         if (e.key === "n") {
           e.preventDefault();
@@ -216,6 +226,8 @@ function App() {
           setIsSettingsOpen(false);
         } else if (isHelpModalOpen) {
           setIsHelpModalOpen(false);
+        } else if (isStatusPanelOpen) {
+          setIsStatusPanelOpen(false);
         } else if (
           activeEl instanceof HTMLInputElement ||
           activeEl instanceof HTMLTextAreaElement
@@ -234,6 +246,7 @@ function App() {
     isPlanModalOpen,
     isSettingsOpen,
     isHelpModalOpen,
+    isStatusPanelOpen,
     dismissAllMessages,
   ]);
 
@@ -282,6 +295,13 @@ function App() {
 
         {isHelpModalOpen && (
           <HelpModal onClose={() => setIsHelpModalOpen(false)} />
+        )}
+
+        {isStatusPanelOpen && (
+          <StatusPanel 
+            onClose={() => setIsStatusPanelOpen(false)} 
+            tasks={tasks}
+          />
         )}
 
         <div className="app-sidebar-column">

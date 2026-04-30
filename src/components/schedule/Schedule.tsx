@@ -3,6 +3,7 @@ import FullCalendar from '@fullcalendar/react';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { format, isSameDay, addDays, subDays } from 'date-fns';
+import { Calendar } from 'lucide-react';
 import type { TimeBlock, Task } from '../../types';
 import { useDroppable } from '@dnd-kit/core';
 
@@ -28,6 +29,7 @@ export const Schedule: React.FC<ScheduleProps> = ({
   unscheduleTask,
 }) => {
   const calendarRef = useRef<FullCalendar>(null);
+  const dateInputRef = useRef<HTMLInputElement>(null);
 
   const scrollToCurrentTime = (smooth = true) => {
     if (!calendarRef.current) return;
@@ -155,111 +157,53 @@ export const Schedule: React.FC<ScheduleProps> = ({
         borderRight: '1px solid var(--border)'
       }}
     >
-      <header style={{ 
-        flexShrink: 0,
-        height: '50px',
-        padding: '0 1.5rem', 
-        borderBottom: '1px solid var(--border)', 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'center',
-        backgroundColor: 'rgba(15, 23, 42, 0.4)',
-        zIndex: 10,
-        backdropFilter: 'blur(8px)'
-      }}>
-        <h2 style={{ 
-          fontSize: '1.0rem', 
-          fontWeight: 600, 
-          textTransform: 'uppercase',
-          letterSpacing: '0.2em',
-          color: 'var(--text-primary)',
-          textShadow: '0 0 15px var(--accent)'
-        }}>
-          {format(new Date(selectedDate), 'EEEE, MMMM do')}
-        </h2>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+      <header className="schedule-header">
+        <div className="header-left">
+          <div className="date-picker-trigger" onClick={() => dateInputRef.current?.showPicker()}>
+            <Calendar size={18} className="calendar-icon-blue" />
+            <input 
+              type="date" 
+              ref={dateInputRef}
+              value={selectedDate} 
+              onChange={(e) => setDate(e.target.value)}
+              className="hidden-date-input"
+            />
+          </div>
+          <h2 className="schedule-date-text">
+            {format(new Date(selectedDate), 'EEEE, MMMM do')}
+          </h2>
+        </div>
+
+        <div className="header-nav">
           <button 
+            className="nav-text-btn"
             onClick={() => {
               const prevDate = subDays(new Date(selectedDate), 1);
               setDate(format(prevDate, 'yyyy-MM-dd'));
             }}
-            aria-label="Previous day"
-            style={{
-              background: 'none',
-              border: 'none',
-              color: 'var(--text-secondary)',
-              cursor: 'pointer',
-              padding: '0.3rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.2s',
-              borderRadius: '4px'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'var(--accent)';
-              e.currentTarget.style.backgroundColor = 'rgba(11, 165, 233, 0.1)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'var(--text-secondary)';
-              e.currentTarget.style.backgroundColor = 'transparent';
-            }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
+            &lt;
           </button>
           
-          <input 
-            type="date" 
-            value={selectedDate} 
-            onChange={(e) => {
-              const target = e.target;
-              setDate(target.value);
-              setTimeout(() => target.blur(), 10);
+          <button 
+            className="nav-text-btn today-btn"
+            onClick={() => {
+              const todayStr = format(new Date(), 'yyyy-MM-dd');
+              setDate(todayStr);
+              setTimeout(() => scrollToCurrentTime(true), 100);
             }}
-            style={{ 
-              backgroundColor: 'rgba(15, 23, 42, 0.6)', 
-              padding: '0.4rem 0.6rem', 
-              borderRadius: '4px', 
-              fontSize: '0.8rem',
-              colorScheme: 'dark',
-              border: '1px solid var(--border)',
-              color: 'var(--text-primary)',
-              fontFamily: 'inherit'
-            }}
-          />
+          >
+            TODAY
+          </button>
 
           <button 
+            className="nav-text-btn"
             onClick={() => {
               const nextDate = addDays(new Date(selectedDate), 1);
               setDate(format(nextDate, 'yyyy-MM-dd'));
             }}
-            aria-label="Next day"
-            style={{
-              background: 'none',
-              border: 'none',
-              color: 'var(--text-secondary)',
-              cursor: 'pointer',
-              padding: '0.3rem',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.2s',
-              borderRadius: '4px'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = 'var(--accent)';
-              e.currentTarget.style.backgroundColor = 'rgba(11, 165, 233, 0.1)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = 'var(--text-secondary)';
-              e.currentTarget.style.backgroundColor = 'transparent';
-            }}
           >
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-              <polyline points="9 18 15 12 9 6"></polyline>
-            </svg>
+            &gt;
           </button>
         </div>
       </header>
@@ -323,6 +267,79 @@ export const Schedule: React.FC<ScheduleProps> = ({
       </div>
 
       <style>{`
+        .schedule-header {
+          flex-shrink: 0;
+          height: 50px;
+          padding: 0 1.5rem;
+          border-bottom: 1px solid var(--border);
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background-color: rgba(15, 23, 42, 0.4);
+          z-index: 10;
+          backdrop-filter: blur(8px);
+        }
+        .header-left {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+        }
+        .date-picker-trigger {
+          position: relative;
+          display: flex;
+          align-items: center;
+          cursor: pointer;
+          transition: transform 0.2s;
+        }
+        .date-picker-trigger:hover {
+          transform: scale(1.1);
+        }
+        .calendar-icon-blue {
+          color: var(--accent);
+          filter: drop-shadow(0 0 5px var(--accent));
+        }
+        .hidden-date-input {
+          position: absolute;
+          opacity: 0;
+          width: 0;
+          height: 0;
+          pointer-events: none;
+        }
+        .schedule-date-text {
+          font-size: 1.0rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.15em;
+          color: var(--text-primary);
+          text-shadow: 0 0 15px var(--accent);
+          margin: 0;
+        }
+        .header-nav {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+        .nav-text-btn {
+          background: none;
+          border: none;
+          color: var(--text-primary);
+          text-shadow: 0 0 15px var(--accent);
+          font-family: var(--font-family);
+          font-size: 1.0rem;
+          font-weight: bold;
+          cursor: pointer;
+          transition: all 0.2s;
+          padding: 4px 8px;
+          letter-spacing: 0.1em;
+        }
+        .nav-text-btn:hover {
+          color: var(--accent);
+          text-shadow: 0 0 20px var(--accent);
+          transform: scale(1.1);
+        }
+        .today-btn {
+          letter-spacing: 0.2em;
+        }
         .fc {
           --fc-border-color: var(--grid-line);
           --fc-now-indicator-color: var(--accent);

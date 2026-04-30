@@ -2,12 +2,17 @@ import { useState, useCallback, useMemo } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { format } from "date-fns";
 import { db } from "../db/db";
-import type { Task, TimeBlock, AISettings, NoteType } from "../types";
+import type { Task, TimeBlock, AISettings, NoteType, EnergyConfig } from "../types";
 
 const DEFAULT_AI_SETTINGS: AISettings = {
   provider: "ollama",
   baseUrl: "http://localhost:11434/v1",
   model: "gemma4:e4b",
+};
+
+const DEFAULT_ENERGY_CONFIG: EnergyConfig = {
+  startTime: "06:00",
+  endTime: "00:00",
 };
 
 export function useStore() {
@@ -26,6 +31,11 @@ export function useStore() {
     return (aiSetting?.value as AISettings) || DEFAULT_AI_SETTINGS;
   }, [settingsArray]);
 
+  const energyConfig = useMemo(() => {
+    const energySetting = settingsArray.find((s) => s.key === "energyConfig");
+    return (energySetting?.value as EnergyConfig) || DEFAULT_ENERGY_CONFIG;
+  }, [settingsArray]);
+
   const updateAISettings = useCallback(
     async (updates: Partial<AISettings>) => {
       const current = aiSettings;
@@ -33,6 +43,15 @@ export function useStore() {
       await db.settings.put({ key: "aiConfig", value: newValue });
     },
     [aiSettings],
+  );
+
+  const updateEnergyConfig = useCallback(
+    async (updates: Partial<EnergyConfig>) => {
+      const current = energyConfig;
+      const newValue = { ...current, ...updates };
+      await db.settings.put({ key: "energyConfig", value: newValue });
+    },
+    [energyConfig],
   );
 
   // Convert notes array to nested record: type -> date -> content
@@ -256,6 +275,8 @@ export function useStore() {
     unscheduleTask,
     aiSettings,
     updateAISettings,
+    energyConfig,
+    updateEnergyConfig,
     getNotesInRange,
   };
 }

@@ -9,6 +9,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
   const shortcuts = [
     { key: '?', description: 'Open this help menu', icon: <Keyboard size={16} /> },
     { key: '/', description: 'Breakdown/Generate Task (AI)', icon: <Command size={16} /> },
+    { key: '.', description: 'Open System Status (Energy/Heatmap)', icon: <Keyboard size={16} /> },
     { key: ',', description: 'Configure AI settings', icon: <Settings size={16} /> },
     { key: 'T', description: "Focus Today's Task input", icon: <CheckSquare size={16} /> },
     { key: 'L', description: 'Focus Later Task input', icon: <ListTodo size={16} /> },
@@ -18,7 +19,7 @@ export const HelpModal: React.FC<HelpModalProps> = ({ onClose }) => {
 
   return (
     <div className="modal-overlay">
-      <div className="glass-panel glow-border" style={{ width: '400px', padding: '2rem', position: 'relative' }}>
+      <div className="glass-panel glow-border" style={{ width: '400px', padding: '2rem', position: 'relative', background: 'rgba(2, 6, 23, 0.9)' }}>
         <button 
           onClick={onClose}
           className="action-btn"

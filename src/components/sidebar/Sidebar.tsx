@@ -1,12 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { Draggable } from '@fullcalendar/interaction';
-import { Download, Upload } from 'lucide-react';
-import { exportDB, importDB } from 'dexie-export-import';
-import { db } from '../../db/db';
 import type { Task, TimeBlock } from '../../types';
 import { TaskList } from './TaskList';
-import { ActivityHeatmap } from '../heatmap/ActivityHeatmap';
 
 interface SidebarProps {
   tasks: Task[];
@@ -19,40 +15,6 @@ interface SidebarProps {
   selectedDate: string;
 }
 
-const EnergyBar: React.FC = () => {
-  const [energy, setEnergy] = useState(0);
-
-  useEffect(() => {
-    const calculateEnergy = () => {
-      const now = new Date();
-      const minutes = now.getHours() * 60 + now.getMinutes();
-      
-      let level = 0;
-      if (minutes >= 360) { // 6 AM to Midnight
-        // 6 AM (360) to 12 AM (1440) is 1080 minutes
-        level = 100 - ((minutes - 360) / 1080) * 100;
-      } else { // Midnight to 6 AM
-        // 12 AM (0) to 6 AM (360) is 360 minutes
-        level = (minutes / 360) * 100;
-      }
-      setEnergy(Math.max(0, Math.min(100, level)));
-    };
-
-    calculateEnergy();
-    const interval = setInterval(calculateEnergy, 60000);
-    return () => clearInterval(interval);
-  }, []);
-
-  return (
-    <div className="energy-bar-container" style={{ flex: 1, marginRight: '1.5rem' }}>
-      <div 
-        className="energy-bar-fill" 
-        style={{ width: `${energy}%` }} 
-      />
-    </div>
-  );
-};
-
 export const Sidebar: React.FC<SidebarProps> = ({
   tasks,
   timeBlocks,
@@ -64,7 +26,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
   selectedDate,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     if (containerRef.current) {
@@ -95,44 +56,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
     id: 'sidebar-droppable',
   });
 
-  const handleExport = async () => {
-    try {
-      const blob = await exportDB(db);
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `timebox-backup-${new Date().toISOString().split('T')[0]}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-    } catch (error) {
-      console.error('Export failed:', error);
-      alert('Backup failed. See console for details.');
-    }
-  };
-
-  const handleImportClick = () => {
-    fileInputRef.current?.click();
-  };
-
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    try {
-      // For a full restore that overwrites everything correctly:
-      // 1. Delete the current database
-      // 2. Import the new database from the file
-      await db.delete();
-      await importDB(file);
-      window.location.reload(); 
-    } catch (error) {
-      console.error('Import failed:', error);
-      alert('Restore failed. Make sure you selected a valid backup file.');
-      // Re-open current db if possible if import failed
-      try { await db.open(); } catch(e) {}
-    }
-  };
-
   const todayTasks = tasks.filter((t) => t.list === 'today' && t.date === selectedDate);
   const laterTasks = tasks.filter((t) => t.list === 'later');
 
@@ -144,27 +67,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       }} 
       className={`sidebar ${isOver ? 'sidebar-droppable-active' : ''}`}
     >
-      <div className="sidebar-header">
-        <EnergyBar />
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <button className="action-btn" onClick={handleExport} title="Export Backup">
-            <Upload size={18} />
-          </button>
-          <button className="action-btn" onClick={handleImportClick} title="Import Restore">
-            <Download size={18} />
-          </button>
-          <input 
-            type="file" 
-            ref={fileInputRef} 
-            onChange={handleFileChange} 
-            style={{ display: 'none' }} 
-            accept=".json"
-          />
-        </div>
-      </div>
-
-      <ActivityHeatmap tasks={tasks} />
-
       <div className="scrollable sidebar-content">
         <TaskList
           title="Today"
