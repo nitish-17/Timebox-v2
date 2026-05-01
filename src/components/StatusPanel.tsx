@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { Download, Upload, X, Activity, Zap, Clock, Save, Check, Database } from 'lucide-react';
-import { exportDB, importDB } from 'dexie-export-import';
-import { db } from '../db/db';
-import { useStore } from '../hooks/useStore';
-import { ActivityHeatmap } from './heatmap/ActivityHeatmap';
-import type { EnergyConfig, Task } from '../types';
+import React, { useEffect, useState } from "react";
+import { Download, Upload, Clock, Save, Check } from "lucide-react";
+import { exportDB, importDB } from "dexie-export-import";
+import { db } from "../db/db";
+import { useStore } from "../hooks/useStore";
+import { ActivityHeatmap } from "./heatmap/ActivityHeatmap";
+import type { EnergyConfig, Task } from "../types";
 
 interface StatusPanelProps {
   onClose: () => void;
@@ -18,23 +18,22 @@ const EnergyBar: React.FC<{ config: EnergyConfig }> = ({ config }) => {
     const calculateEnergy = () => {
       const now = new Date();
       const currentMinutes = now.getHours() * 60 + now.getMinutes();
-      
-      const [startH, startM] = config.startTime.split(':').map(Number);
-      const [endH, endM] = config.endTime.split(':').map(Number);
-      
+
+      const [startH, startM] = config.startTime.split(":").map(Number);
+      const [endH, endM] = config.endTime.split(":").map(Number);
+
       const startMinutes = startH * 60 + startM;
       let endMinutes = endH * 60 + endM;
-      
+
       // If end time is same or before start time, assume it's the next day
       if (endMinutes <= startMinutes) {
         endMinutes += 1440;
       }
-      
+
       const totalDuration = endMinutes - startMinutes;
-      
-      const normalizedNow = currentMinutes < startMinutes 
-        ? currentMinutes + 1440 
-        : currentMinutes;
+
+      const normalizedNow =
+        currentMinutes < startMinutes ? currentMinutes + 1440 : currentMinutes;
 
       let elapsed = 0;
       if (normalizedNow >= startMinutes && normalizedNow <= endMinutes) {
@@ -44,7 +43,7 @@ const EnergyBar: React.FC<{ config: EnergyConfig }> = ({ config }) => {
       } else {
         elapsed = 0; // Stay at 100 (should not happen with this normalization)
       }
-      
+
       const level = 100 - (elapsed / totalDuration) * 100;
       setEnergy(Math.max(0, Math.min(100, level)));
     };
@@ -56,10 +55,7 @@ const EnergyBar: React.FC<{ config: EnergyConfig }> = ({ config }) => {
 
   return (
     <div className="energy-bar-container">
-      <div 
-        className="energy-bar-fill" 
-        style={{ width: `${energy}%` }} 
-      />
+      <div className="energy-bar-fill" style={{ width: `${energy}%` }} />
     </div>
   );
 };
@@ -78,20 +74,20 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ onClose, tasks }) => {
     try {
       const blob = await exportDB(db);
       const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
+      const a = document.createElement("a");
       a.href = url;
-      a.download = `timebox-backup-${new Date().toISOString().split('T')[0]}.json`;
+      a.download = `timebox-backup-${new Date().toISOString().split("T")[0]}.json`;
       a.click();
       URL.revokeObjectURL(url);
     } catch (error) {
-      console.error('Export failed:', error);
+      console.error("Export failed:", error);
     }
   };
 
   const handleImportClick = () => {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.json';
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json";
     input.onchange = async (e) => {
       const file = (e.target as HTMLInputElement).files?.[0];
       if (!file) return;
@@ -101,7 +97,7 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ onClose, tasks }) => {
         await importDB(file);
         window.location.reload();
       } catch (error) {
-        console.error('Import failed:', error);
+        console.error("Import failed:", error);
         window.location.reload();
       }
     };
@@ -119,29 +115,46 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ onClose, tasks }) => {
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div 
-        className="modal-content glass-panel glow-border status-panel-content" 
+      <div
+        className="modal-content glass-panel glow-border status-panel-content"
         onClick={(e) => e.stopPropagation()}
-        style={{ padding: '2rem 2rem 0 2rem' }}
+        style={{ padding: "2rem 2rem 0 2rem" }}
       >
-        <div className="modal-body" style={{ display: 'flex', flexDirection: 'column' }}>
+        <div
+          className="modal-body"
+          style={{ display: "flex", flexDirection: "column" }}
+        >
           {/* Energy Section */}
-          <section className="status-section" style={{ margin: 0, padding: '1rem 0 1.5rem 0' }}>
+          <section
+            className="status-section"
+            style={{ margin: 0, padding: "1rem 0 1.5rem 0" }}
+          >
             <EnergyBar config={energyConfig} />
           </section>
 
           {/* Heatmap Section */}
-          <section className="status-section" style={{ margin: '1.5rem 0 1rem 0' }}>
+          <section
+            className="status-section"
+            style={{ margin: "1.5rem 0 1rem 0" }}
+          >
             <ActivityHeatmap tasks={tasks} />
           </section>
 
           {/* Data Actions Section */}
-          <section className="status-section" style={{ margin: '1rem 0 0 0' }}>
+          <section className="status-section" style={{ margin: "1rem 0 0 0" }}>
             <div className="status-actions-minimal">
-              <button className="minimal-icon-btn" onClick={handleExport} title="Export">
+              <button
+                className="minimal-icon-btn"
+                onClick={handleExport}
+                title="Export"
+              >
                 <Upload size={20} />
               </button>
-              <button className="minimal-icon-btn" onClick={handleImportClick} title="Import">
+              <button
+                className="minimal-icon-btn"
+                onClick={handleImportClick}
+                title="Import"
+              >
                 <Download size={20} />
               </button>
             </div>
@@ -152,24 +165,37 @@ export const StatusPanel: React.FC<StatusPanelProps> = ({ onClose, tasks }) => {
             <form onSubmit={handleSave} className="hover-settings">
               <div className="time-fields">
                 <div className="status-input-wrapper">
-                  <input 
-                    type="time" 
+                  <input
+                    type="time"
                     value={localConfig.startTime}
-                    onChange={(e) => setLocalConfig({ ...localConfig, startTime: e.target.value })}
+                    onChange={(e) =>
+                      setLocalConfig({
+                        ...localConfig,
+                        startTime: e.target.value,
+                      })
+                    }
                     className="status-time-input"
                   />
                   <Clock size={14} className="input-icon-right" />
                 </div>
                 <div className="status-input-wrapper">
-                  <input 
-                    type="time" 
+                  <input
+                    type="time"
                     value={localConfig.endTime}
-                    onChange={(e) => setLocalConfig({ ...localConfig, endTime: e.target.value })}
+                    onChange={(e) =>
+                      setLocalConfig({
+                        ...localConfig,
+                        endTime: e.target.value,
+                      })
+                    }
                     className="status-time-input"
                   />
                   <Clock size={14} className="input-icon-right" />
                 </div>
-                <button type="submit" className={`minimal-icon-btn ${isSaved ? 'success' : ''}`}>
+                <button
+                  type="submit"
+                  className={`minimal-icon-btn ${isSaved ? "success" : ""}`}
+                >
                   {isSaved ? <Check size={18} /> : <Save size={18} />}
                 </button>
               </div>

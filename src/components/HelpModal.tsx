@@ -8,7 +8,6 @@ import {
   CheckSquare,
   ListTodo,
   XCircle,
-  Sparkles,
 } from "lucide-react";
 
 interface HelpModalProps {
